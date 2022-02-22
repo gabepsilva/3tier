@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+echo ""
+echo "First do login to your container regiter using Docker"
+echo "ie:"
+echo "docker login"
+echo "docker login ghcr.io/<username>/<image-name>:<tag>"
+echo "docker login ghcr.io/jhondoe/web:latest"
+echo ""
+read -p "Press any key to resume ..."
+
+
+echo "> delete secret if exists"
+kubectl delete secret regcred 2> /dev/null
+
+printf "\n> Adding new... \n"
+kubectl create secret generic regcred \
+    --from-file=.dockerconfigjson=${HOME}/.docker/config.json \
+    --type=kubernetes.io/dockerconfigjson

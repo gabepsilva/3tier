@@ -1,0 +1,81 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    app: api
+    project: 3tier
+spec:
+  replicas: 5
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/gasilva-clgx/api:latest
+
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          env:
+            - name: PORT
+              value: "8081"
+            - name: DB  
+              value: postgres
+            - name: DBUSER  
+              value: postgres
+            - name: DBPASS
+              valueFrom:
+                secretKeyRef:
+                  name: api-db-pass
+                  key: password
+            - name: DBHOST  
+              value: 104.154.210.112
+            - name: DBPORT
+              value: "5432"
+      imagePullSecrets:
+        - name: regcred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+spec:
+  selector:
+    app: api
+  ports:
+    - port: 8081
+      targetPort: 8081
+  type: LoadBalancer
+  loadBalancerIP: 35.226.115.16
+
+# RECOMMENDATION:
+# WHEN ADDING NEW BACKEND SERVICES WE SHOULD MOVE AWAY FROM LOAD BALANCER
+# AND START USING A INGRESS.
+# NOTE: STILL KEEP A LOAD BALANCER FOR FRONT END APPS
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: api
+# spec:
+#   selector:
+#     app: api
+#   ports:
+#     - port: 8081
+#       targetPort: 8081
+#   type: NodePort
+ 

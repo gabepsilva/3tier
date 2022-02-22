@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+
+gcloud container clusters get-credentials kube-learning --region us-central1 --project toptal-screening-1

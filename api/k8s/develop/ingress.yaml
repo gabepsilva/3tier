@@ -1,0 +1,13 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: api
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: kube-3tier-global
+  labels:
+    app: api-label
+spec:
+  backend:
+    serviceName: api
+    servicePort: 8081
