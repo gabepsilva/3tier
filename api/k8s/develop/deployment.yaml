@@ -41,7 +41,7 @@ spec:
                   name: api-db-pass
                   key: password
             - name: DBHOST  
-              value: 104.154.210.112
+              value: proxy.3tier.tk0
             - name: DBPORT
               value: "5432"
       imagePullSecrets:

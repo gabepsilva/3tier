@@ -62,3 +62,4 @@ typings/
 
 .terraform
 .terraform.lock.hcl
+terraform.tfstate

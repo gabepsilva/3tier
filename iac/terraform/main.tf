@@ -9,14 +9,21 @@ provider "google" {
     credentials = file("~/toptal-screening-1-7b90d8bd1253.json")
     project = var.gcp_project_id
     region  = var.region
-    version = "~> 4.11.0" 
 }
 
 provider "google-beta" {
     credentials = file("~/toptal-screening-1-7b90d8bd1253.json")
     project = var.gcp_project_id
     region  = var.region
-    version = "~> 4.11.0"
+}
+
+
+module "ha_reverse_proxy" {
+    source = "./modules/compute"
+
+    name = "top-ha-proxy1"
+    region = "us-central1"
+    private_key_path = "~/.ssh/id_ed25519"
 }
 
 

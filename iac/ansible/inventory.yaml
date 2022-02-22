@@ -1,0 +1,18 @@
+
+---
+all:
+  children:
+
+    servers:
+      children:
+
+        onprem:
+
+        cloud:
+          hosts:
+              ha_proxy:
+                ansible_host: 35.226.149.220
+              jenkins:
+                ansible_host: 35.226.149.220
+            vars:
+              ansible_ssh_user: "gabrielpe"

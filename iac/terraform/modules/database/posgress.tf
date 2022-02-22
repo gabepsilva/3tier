@@ -1,5 +1,5 @@
 locals {
-  allowed_ip = ["24.150.66.6", "34.132.80.13"]
+  allowed_ip = ["24.150.66.6", "34.132.80.13", "0.0.0.0/0"]
 }
 
 
@@ -44,6 +44,7 @@ resource "google_sql_database_instance" "postgres" {
 
 }
 
+/*
 resource "random_uuid" "randpwd" {
 }
 
@@ -53,3 +54,4 @@ resource "google_sql_user" "user" {
   host     = "*"
   password = random_uuid.randpwd.result #random password with output
 }
+*/

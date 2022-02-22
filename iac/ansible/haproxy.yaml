@@ -1,0 +1,12 @@
+---
+- hosts: all
+  tasks:
+    - name: ensure haproxy is at the latest version
+      apt: name=haproxy state=latest
+      become: true
+    - name: start haproxy
+      service:
+          name: haproxy
+          state: started
+      become: true
+  
