@@ -29,7 +29,7 @@ variable "preemptible" {
 
 variable "network_tags"{
     type = list
-    default = []
+    default = ["all"]
 }
 
 variable "private_key_path" {

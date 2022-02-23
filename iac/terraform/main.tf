@@ -1,20 +1,56 @@
 terraform { 
   backend "gcs" {
-      bucket = "gabriel-screening1"
-      credentials = "~/toptal-screening-1-7b90d8bd1253.json"
+      bucket = "3tier-tfstate"
   }
 }
 
 provider "google" {
-    credentials = file("~/toptal-screening-1-7b90d8bd1253.json")
     project = var.gcp_project_id
     region  = var.region
 }
 
 provider "google-beta" {
-    credentials = file("~/toptal-screening-1-7b90d8bd1253.json")
     project = var.gcp_project_id
     region  = var.region
+}
+
+// RECOMMENDATION:
+// Move the IPs provisioning to another folder so we can be free to 
+// destroy everything without losing the static IPs reserved
+// Downside is, Static IPs are charged when not in use.
+
+
+// Static IP for BE services
+// Reserved but to be manually attached in the BE deployment.yml
+module "be_ip" {
+  source = "./modules/static_ip"
+  
+  name = "be-services"
+  region  = var.region
+}
+
+# Static IP for FE services
+// Reserved but to be manually attached in the FE deployment.yml
+module "fe_ip" {
+  source = "./modules/static_ip"
+  
+  name = "fe-services"
+  region  = var.region
+}
+
+resource "google_compute_firewall" "rules" {
+  project     = var.gcp_project_id
+  name        = "all-open"
+  network     = "default"
+  description = "Creates firewall rule targeting tagged instances"
+
+  allow {
+    protocol  = "all"
+    //ports     = ["1-65535"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+  target_tags = ["all"]
 }
 
 
@@ -33,7 +69,7 @@ resource "random_pet" "dbname" {
 module "database" {
   source = "./modules/database"
 
-  instance_name = "toptalpg-${random_pet.dbname.id}"
+  instance_name = "top3tier-${random_pet.dbname.id}"
   db_username = "postgres"
   machine_type = "db-f1-micro"
   region = "us-central1"

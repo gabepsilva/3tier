@@ -1,12 +1,12 @@
 
 variable "node_pool_name" {
     type        = string
-    default     = "kube-learning-pool"
+    default     = "top3tier-pool"
 }
 
 variable "cluster_name" {
     type        = string
-    default     = "kube-learning"
+    default     = "top3tier-cluster"
 }
 
 variable "region" {

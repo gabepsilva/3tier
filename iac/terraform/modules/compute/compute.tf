@@ -1,6 +1,16 @@
-resource "google_compute_address" "static_ip" {
-  name    = "rev-proxy-yip"
+# resource "google_compute_address" "static_ip" {
+#   name    = "rev-proxy-yip"
+#   region  = var.region
+# }
+
+
+module "rev_proxy_static_ip" {
+  source = "../static_ip"
+  
+  name = "rev-proxy-ip"
   region  = var.region
+
+
 }
 
 
@@ -16,6 +26,7 @@ resource "google_compute_instance" "proxy_instance" {
   }
 
 
+
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-9"
@@ -26,7 +37,8 @@ resource "google_compute_instance" "proxy_instance" {
     network = "default"
 
     access_config {
-      nat_ip = google_compute_address.static_ip.address
+      //nat_ip = google_compute_address.static_ip.address
+        nat_ip = module.rev_proxy_static_ip.reserved_ip
     }
   }
 
