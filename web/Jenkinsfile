@@ -5,24 +5,26 @@ pipeline {
         stage('npm auditi') {
             steps {
                 
-                sh 'cd web'
-                sh 'pwd'
-                sh 'ls -lhrt'
-                sh 'npm audit | tee auditReport.html'
                 
-                publishHTML (
-                    target : [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: '.',
-                        reportFiles: 'auditReport.html',
-                        reportName: 'npm auditi report',
-                        reportTitles: 'Reports'
-                    ]
-                )
+                dir('web') {
+
+                    sh 'pwd'
+                    sh 'ls -lhrt'
+                    sh 'npm audit | tee auditReport.html'
+
+                    publishHTML (
+                        target : [
+                            allowMissing: false,
+                            alwaysLinkToLastBuild: true,
+                            keepAll: true,
+                            reportDir: '.',
+                            reportFiles: 'auditReport.html',
+                            reportName: 'npm auditi report',
+                            reportTitles: 'Reports'
+                        ]
+                    )
                 
-               
+               }
             }
         }
         stage('Test') {
