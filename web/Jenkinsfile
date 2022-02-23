@@ -4,7 +4,10 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
+                sh 'pwd'
+                sh 'cd web'
+                sh 'env | sort'
+                sh 'docker build -t ghcr.io/gasilva-clkx/web:latest' .
             }
         }
         stage('Test') {
