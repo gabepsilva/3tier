@@ -1,51 +1,65 @@
 pipeline {
-    agent any
+  agent any
 
     stages {
-        stage('npm audit') {
-            steps {
-                
-                
-                dir('web') {
-
-                    sh 'npm audit | tee auditReport.html'
-
-                    publishHTML (
-                        target : [
-                            allowMissing: false,
-                            alwaysLinkToLastBuild: true,
-                            keepAll: true,
-                            reportDir: '.',
-                            reportFiles: 'auditReport.html',
-                            reportName: 'npm audit report',
-                            reportTitles: 'Reports'
-                        ]
-                    )
-               }
-            }
-        }
-        stage('sonarqube') {
-            steps {
-                sh 'env | sort'
-            }
-        }
-        stage('build') {
-            steps {
-                
-                dir('web'){
-                    sh 'docker build -t ghcr.io/gasilva-clgx/web:latest .'
-                } 
-            }
-        }
-     stage('push to cr') {
+      stage('npm audit') {
         steps {
+
+          dir('web') {
+            sh 'npm audit | tee auditReport.html'
+
+            publishHTML (
+                target : [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: '.',
+                    reportFiles: 'auditReport.html',
+                    reportName: 'npm audit report',
+                    reportTitles: 'Reports'
+                ]
+            )
+          }
+        }
+      }
+
+      stage('sonarqube') {
+        steps {
+            sh 'env | sort'
+        }
+      }
+
+      stage('build') {
+        steps {
+              
+          dir('web'){
+            sh 'docker build -t ghcr.io/gasilva-clgx/web:latest .'
+          } 
+        }
+      }
+
+    stage('push to cr') {
+        steps {
+            when {
+                expression {BRANCH_NAME ==~ /(MASTER)/}
+            }
             
             withCredentials([usernamePassword(credentialsId: 'gh-ga-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                 sh "docker login ghcr.io/gasilva-clgx -u ${USERNAME} -p ${PASSWORD} "
                 sh 'docker push ghcr.io/gasilva-clgx/web:latest'
-            }
-
         }
+      }
     }
+    stage('deploy') {
+        steps {
+            when {
+                expression {BRANCH_NAME ==~ /(MASTER)/}
+            }
+            
+            withCredentials([usernamePassword(credentialsId: 'gh-ga-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+               echo 'deploy'
+        }
+      }
     }
+  }
 }
