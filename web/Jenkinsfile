@@ -60,7 +60,7 @@ pipeline {
       steps {
         withCredentials([usernamePassword(credentialsId: 'gh-ga-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           sh "docker login ghcr.io/gasilva-clgx -u ${USERNAME} -p ${PASSWORD} "
-          sh 'docker push ghcr.io/gasilva-clgx/web:latest'
+          sh "docker push ghcr.io/gasilva-clgx/web:${env.SHORT_HASH}"
         }
       }
     }
