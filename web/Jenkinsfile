@@ -42,7 +42,7 @@ pipeline {
           script{
 
             if (env.BRANCH_NAME.startsWith("PR-")) {
-                sh "docker build ghcr.io/gasilva-clgx/web:pr"
+                sh "docker build ."
             }else{
               env.SHORT_HASH = sh(returnStdout: true, script: "git rev-parse --short ${env.BRANCH_NAME}")
               sh "docker build -t ghcr.io/gasilva-clgx/web:${env.BRANCH_NAME}-${BUILD_NUMBER}-${env.SHORT_HASH} ."
