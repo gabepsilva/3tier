@@ -1,3 +1,4 @@
+
 pipeline {
   agent any
   options {
@@ -37,14 +38,18 @@ pipeline {
       steps {
             
         dir('web'){
-          sh 'docker build -t ghcr.io/gasilva-clgx/web:latest .'
+
+          script{
+            env.SHORT_HASH = sh(returnStdout: true, script: "git rev-parse --short ${env.BRANCH_NAME}")
+          }
+          sh "docker build -t ghcr.io/gasilva-clgx/web:${env.BRANCH_NAME}-${BUILD_NUMBER}-${env.SHORT_HASH} ."
         } 
       }
     }
 
     stage('push to cr') {
       when {
-          expression {BRANCH_NAME ==~ /(MASTER)/}
+          expression {BRANCH_NAME ==~ /(master|develop)/}
         }
 
       steps {
@@ -57,7 +62,7 @@ pipeline {
     
     stage('deploy') {
         when {
-          expression {BRANCH_NAME ==~ /(MASTER)/}
+          expression {BRANCH_NAME ==~ /(master|develop)/}
         }
 
         steps {
@@ -69,3 +74,4 @@ pipeline {
     }
   }
 }
+
