@@ -10,7 +10,7 @@ pipeline {
 
                     sh 'pwd'
                     sh 'ls -lhrt'
-                    sh 'npm audit | tee auditReport.txt'
+                    sh 'npm audit | tee auditReport.html'
 
                     publishHTML (
                         target : [
@@ -18,7 +18,7 @@ pipeline {
                             alwaysLinkToLastBuild: true,
                             keepAll: true,
                             reportDir: '.',
-                            reportFiles: 'auditReport.txt',
+                            reportFiles: 'auditReport.html',
                             reportName: 'npm audit report',
                             reportTitles: 'Reports'
                         ]
@@ -46,9 +46,14 @@ pipeline {
                 
             }
         }
-     stage('Deploy') {
+     stage('push to cr') {
         steps {
-            echo 'Deploying....'
+            
+            withCredentials([usernamePassword(credentialsId: 'gh-ga-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                sh "docker login ghcr.io/gasilva-clgx -u ${USERNAME} -p ${PASSWORD} "
+                sh 'docker push ghcr.io/gasilva-clgx:latest'
+            }
+
         }
     }
     }
