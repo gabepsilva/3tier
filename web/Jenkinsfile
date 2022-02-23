@@ -1,3 +1,4 @@
+
 pipeline {
   agent any
   options {
@@ -37,27 +38,37 @@ pipeline {
       steps {
             
         dir('web'){
-          sh 'docker build -t ghcr.io/gasilva-clgx/web:latest .'
+
+          script{
+
+            if (env.BRANCH_NAME.startsWith("PR-")) {
+                sh "docker build ."
+            }else{
+              def shortHash = sh(returnStdout: true, script: "git rev-parse --short origin/${env.BRANCH_NAME}").trim()
+              env.SHORT_HASH = "${env.BRANCH_NAME}-${BUILD_NUMBER}-${shortHash}"
+              sh """ docker build -t "ghcr.io/gasilva-clgx/web:${env.SHORT_HASH}" . """
+            }
+          }
         } 
       }
     }
 
     stage('push to cr') {
       when {
-          expression {BRANCH_NAME ==~ /(MASTER)/}
+          expression {BRANCH_NAME ==~ /(master|develop)/}
         }
 
       steps {
         withCredentials([usernamePassword(credentialsId: 'gh-ga-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           sh "docker login ghcr.io/gasilva-clgx -u ${USERNAME} -p ${PASSWORD} "
-          sh 'docker push ghcr.io/gasilva-clgx/web:latest'
+          sh "docker push ghcr.io/gasilva-clgx/web:${env.SHORT_HASH}"
         }
       }
     }
     
     stage('deploy') {
         when {
-          expression {BRANCH_NAME ==~ /(MASTER)/}
+          expression {BRANCH_NAME ==~ /(master|develop)/}
         }
 
         steps {
@@ -69,3 +80,4 @@ pipeline {
     }
   }
 }
+
