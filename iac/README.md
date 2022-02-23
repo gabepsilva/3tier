@@ -92,7 +92,7 @@ You can host them in a Jenkins (or similar) job and protect it against non sysad
 
 
 ## Set up a container registry credential in your cluster
-Execute the script `./iac/k8s-config/bin/cr-config` and follow the instructions.\
+Execute the script `./iac/k8s-config/bin/cr-config` and follow the instructions.
 
 Notice that the script will pause and ask you to do a `docker login <container-register.com/user>`.
 If you haven't done it yet. Abort and do it before continuing.
@@ -174,6 +174,14 @@ https://console.cloud.google.com/compute/metadata?tab=sshkeys
 ```bash
     ssh gabrielpe@34.136.168.55
 ```
+
+## Ansible
+- Copy and run Ansible on the proxy server to have it almost fully configured.
+
+**Manually**
+- Update accordly the IPs and or DNS names in `/etc/haproxy/haproxy.cfg`
+
+
 
 **RECOMMENDATION**\
 A LOT of the above can be automated.
