@@ -6,6 +6,8 @@ pipeline {
             steps {
                 
                 sh 'cd web'
+                sh 'pwd'
+                sh 'ls -lhrt'
                 sh 'npm audit | tee auditReport.html'
                 
                 publishHTML (
