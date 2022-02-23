@@ -23,19 +23,33 @@ pipeline {
                             reportTitles: 'Reports'
                         ]
                     )
-                
                }
             }
         }
-        stage('Test') {
+        stage('sonarqube') {
             steps {
                 echo 'Testing..'
             }
         }
-        stage('Deploy') {
+        stage('build') {
             steps {
-                echo 'Deploying....'
+                
+                dir('web'){
+                
+                    sh 'docker build -t ghcr.io/gasilva-clgx:latest .'
+                    sh 'docker images'
+                    
+                    
+                }
+                
+                
+                
             }
         }
+     stage('Deploy') {
+        steps {
+            echo 'Deploying....'
+        }
+    }
     }
 }
