@@ -2,12 +2,25 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('npm auditi') {
             steps {
-                sh 'pwd'
+                
                 sh 'cd web'
-                sh 'env | sort'
-                sh 'docker build -t ghcr.io/gasilva-clkx/web:latest .' 
+                sh 'npm audit | tee auditReport.html'
+                
+                publishHTML (
+                    target : [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: '.',
+                        reportFiles: 'auditReport.html',
+                        reportName: 'npm auditi report',
+                        reportTitles: 'Reports'
+                    ]
+                )
+                
+               
             }
         }
         stage('Test') {
