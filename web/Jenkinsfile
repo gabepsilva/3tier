@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('npm auditi') {
+        stage('npm audit') {
             steps {
                 
                 
@@ -10,7 +10,7 @@ pipeline {
 
                     sh 'pwd'
                     sh 'ls -lhrt'
-                    sh 'npm audit | tee auditReport.html'
+                    sh 'npm audit | tee auditReport.txt'
 
                     publishHTML (
                         target : [
@@ -18,8 +18,8 @@ pipeline {
                             alwaysLinkToLastBuild: true,
                             keepAll: true,
                             reportDir: '.',
-                            reportFiles: 'auditReport.html',
-                            reportName: 'npm auditi report',
+                            reportFiles: 'auditReport.txt',
+                            reportName: 'npm audit report',
                             reportTitles: 'Reports'
                         ]
                     )
