@@ -45,7 +45,7 @@ pipeline {
                 sh "docker build ."
             }else{
               env.SHORT_HASH = sh(returnStdout: true, script: "git rev-parse --short origin/${env.BRANCH_NAME}")
-              sh "docker build -t "ghcr.io/gasilva-clgx/web:${env.BRANCH_NAME}-${BUILD_NUMBER}-${env.SHORT_HASH}" ."
+              sh "docker build -t """ghcr.io/gasilva-clgx/web:${env.BRANCH_NAME}-${BUILD_NUMBER}-${env.SHORT_HASH}" ."""
             }
           }
         } 
