@@ -15,6 +15,8 @@ TODO: *recommended
     - Split frontend and backend in different repositories
     - Create a third repository for IAC and files not related to app development 
 
+# Blueprint
+![Blueprint](https://foo.svg "Blueprint")
 
 # Development environment 
 
