@@ -16,7 +16,7 @@ TODO: *recommended
     - Create a third repository for IAC and files not related to app development 
 
 # Blueprint
-![Blueprint](https://foo.svg "Blueprint")
+![](https://github.com/gasilva-clgx/3tier/blob/develop/images/blueprint-current-state.png?raw=true | width=100)
 
 # Development environment 
 
