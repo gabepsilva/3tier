@@ -5,27 +5,32 @@ This Terraform modules will create the infrastructure necessary in GCP.
 TODO: Replace hard coded values to variables and organize folders to allow multi environments builds.
 
 
-* Know Issues:
-    - Script will fail after network and before DB provisioning. Root cause is unclear, but re running the script again will complete the task succesfully.
-    - Issue provisioning user for Postgres. Works fine for MySQL. Bug?
-        ```
-Error: Provider produced inconsistent result after apply
-│ 
-│ When applying changes to module.database.google_sql_user.users, provider "provider[\"registry.terraform.io/hashicorp/google\"]" produced an unexpected new value: Root resource
-│ was present, but now absent.
-│ 
-│ This is a bug in the provider, which should be reported in the provider's own issue tracker.
-```
+# Module Description
+
+## Compute
+Provision one preemptable virtual machine to be used as proxy to access the internal network. There are Ansible scripts to automate the servers configurations; those scripts must be copied to the server and run agains localhost.
+
+TODO: Use startup scripts feature of Virtual machines to prepare remote access to virtual machines on creation.
+
+## Database
+Provisions one CloudSQL instance and limits its access to the listed IP addresses. The server specs also are also configurable. 
+There will be one user created and its password must be set manualy. This password also must be set in the Kuberneted cluster. There is a helper script for that. `iac/k8s-config/bin/api-config`
 
 
+## K8s
+Provision a Kubernetes cluster in the same network and region as the Database and the proxy VPS. For cost effectiviness the cluster is composed by preemptable virtual machines.
 
 
-```
-Error: Error, failed to create instance because the network doesn't have at least 1 private services connection. Please see https://cloud.google.com/sql/docs/mysql/private-ip#network_requirements for how to create this connection.
-│ 
-│   with module.database.google_sql_database_instance.postgres,
-│   on modules/db/sql-instance.tf line 1, in resource "google_sql_database_instance" "postgres":
-│    1: resource "google_sql_database_instance" "postgres" {
-│ 
-╵
-```
+## Network
+This module is designed for a future state. It will create a private network with a NAT to route egress traffic. Possible load balancers with external ip adresses are planed.
+
+
+## Stati IP
+This module will reserve three static IPs to be allocated 
+    - one in the proxy server
+    - two for the K8s cluster, being 
+        - one fir the frontend apps
+        - one the the backend apps
+
+## Main
+This script gules everthing together.
