@@ -73,7 +73,7 @@ pipeline {
 
       steps {
 
-        kubectl apply -f 'web/k8s/develop/deployment.yaml'
+        sh "kubectl apply -f 'web/k8s/develop/deployment.yaml'"
       }
         
       
