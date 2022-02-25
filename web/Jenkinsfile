@@ -56,24 +56,12 @@ pipeline {
     stage('push to cr') {
       when {
           expression {BRANCH_NAME ==~ /(master|develop)/}
-        }
-
-      steps {
-        withCredentials([usernamePassword(credentialsId: 'gh-ga-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "docker login ghcr.io/gasilva-clgx -u ${USERNAME} -p ${PASSWORD} "
-          sh "docker push ghcr.io/gasilva-clgx/web:${env.SHORT_HASH}"
-        }
-      }
-    }
-    
-    stage('deploy') {
-      when {
-        expression {BRANCH_NAME ==~ /(master|develop)/}
-      }
-
-      steps {
-
-        sh "kubectl apply -f 'web/k8s/develop/deployment.yaml'"
+        }REPLACEMENT
+        sh """
+          cp 'web/k8s/develop/deployment.yaml' .
+          sed -i 's/{tag}/env.SHORT_HASH/g' deployment.yaml
+          kubectl apply -f deployment.yaml"
+        """
       }
         
       

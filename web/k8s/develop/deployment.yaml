@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: ghcr.io/gasilva-clgx/web:develop-15-ec2db61
+          image: ghcr.io/gasilva-clgx/web:{tag}
 
           imagePullPolicy: Always
           ports:
