@@ -1,21 +1,85 @@
-pipeline {
-    agent any
 
-    stages {
-        stage('Build') {
-            steps {
-                echo 'Building..'
-            }
+pipeline {
+  agent any
+  options {
+    ansiColor('xterm')
+    timestamps()
+  }
+
+  stages {
+    stage('npm audit') {
+      steps {
+
+        dir('api') {
+          sh 'npm audit | tee auditReport.html'
+
+          publishHTML (
+              target : [
+                  allowMissing: false,
+                  alwaysLinkToLastBuild: true,
+                  keepAll: true,
+                  reportDir: '.',
+                  reportFiles: 'auditReport.html',
+                  reportName: 'npm audit report',
+                  reportTitles: 'Reports'
+              ]
+          )
         }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-            }
-        }
+      }
     }
+
+    stage('sonarqube') {
+      steps {
+          sh 'env | sort'
+      }
+    }
+
+    stage('build') {
+      steps {
+            
+        dir('api'){
+
+          script{
+
+            if (env.BRANCH_NAME.startsWith("PR-")) {
+                sh "docker build ."
+            }else{
+              def shortHash = sh(returnStdout: true, script: "git rev-parse --short origin/${env.BRANCH_NAME}").trim()
+              env.SHORT_HASH = "${env.BRANCH_NAME}-${BUILD_NUMBER}-${shortHash}"
+              sh """ docker build -t "ghcr.io/gasilva-clgx/api:${env.SHORT_HASH}" . """
+            }
+          }
+        } 
+      }
+    }
+
+    stage('push to cr') {
+      when {
+          expression {BRANCH_NAME ==~ /(master|develop)/}
+        }
+
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'gh-ga-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+          sh "docker login ghcr.io/gasilva-clgx -u ${USERNAME} -p ${PASSWORD} "
+          sh "docker push ghcr.io/gasilva-clgx/api:${env.SHORT_HASH}"
+        }
+      }
+    }
+    
+    stage('deploy') {
+      when {
+        expression {BRANCH_NAME ==~ /(master|develop)/}
+      }
+
+      steps {
+
+        sh """
+          cp 'api/k8s/develop/deployment.yaml' .
+          sed -i 's/{tag}/${env.SHORT_HASH}/g' deployment.yaml
+          kubectl apply -f deployment.yaml
+        """
+      }
+    }
+  }
 }
+
