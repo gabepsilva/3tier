@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: ghcr.io/gasilva-clgx/{tag}
+          image: ghcr.io/gasilva-clgx/web:{tag}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
