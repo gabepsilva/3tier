@@ -75,7 +75,7 @@ pipeline {
 
         sh """
           cp 'web/k8s/develop/deployment.yaml' .
-          sed -i 's/{tag}/env.SHORT_HASH/g' deployment.yaml
+          sed -i 's/{tag}/${env.SHORT_HASH}/g' deployment.yaml
           kubectl apply -f deployment.yaml
         """
       }
