@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: ghcr.io/gasilva-clgx/api:latest
+          image: ghcr.io/gasilva-clgx/api:{tag}
 
           imagePullPolicy: Always
           ports:
@@ -44,6 +44,11 @@ spec:
               value: haproxy.3tier.tk
             - name: DBPORT
               value: "5432"
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
       imagePullSecrets:
         - name: regcred
 
@@ -59,7 +64,7 @@ spec:
     - port: 8081
       targetPort: 8081
   type: LoadBalancer
-  loadBalancerIP: 34.66.32.0
+  loadBalancerIP: 34.122.27.31
 
 # RECOMMENDATION:
 # WHEN ADDING NEW BACKEND SERVICES WE SHOULD MOVE AWAY FROM LOAD BALANCER

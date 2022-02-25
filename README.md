@@ -10,11 +10,8 @@ web <=> api <=> db
 The folders `web` and `api` respectively describe how to install and run each app.
 
 
-TODO: *recommended
-
-    - Split frontend and backend in different repositories
-    - Create a third repository for IAC and files not related to app development 
-
+# Blueprint
+<img src="images/blueprint-current-state.png" width="500"/> 
 
 # Development environment 
 
@@ -86,23 +83,3 @@ docker run \
     -p 5432:5432\
     postgres
 ```
-
-
-# Debug tips
-
-    - Most processes used to create this project 
-
-
-
-    - useful commands
-    ```shell
-    # watch app logs 
-    kubectl logs -l app=web  --all-containers -f
-
-    # jump inside a running container
-    kubectl exec -it <POD> --container <container> -- ash
-
-    # test DB connectivity
-    apk add postgress
-    psql -h <dbhostname> -p 5432 -d postgres -U postgres
-    ```

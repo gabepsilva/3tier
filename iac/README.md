@@ -190,6 +190,27 @@ A LOT of the above can be automated.
 ## One last thing: Observability
 
 
+Observability should be a straightforward step. For this project we are using New Relic for monitoring.
+
+Installation:
+
+    - Install the components in your jenkins cluster. Wait until the outputs starts appearing the the console
+
+```bash
+helm repo add newrelic https://helm-charts.newrelic.com && helm repo update && \
+kubectl create namespace newrelic ; helm upgrade --install newrelic-bundle newrelic/nri-bundle \
+ --set global.licenseKey=531262cd47dbbf18db48c925d2efae63a85fNRAL \
+ --set global.cluster=c1 \
+ --namespace=newrelic \
+ --set newrelic-infrastructure.privileged=true \
+ --set global.lowDataMode=true \
+ --set ksm.enabled=true \
+ --set kubeEvents.enabled=true 
+```
+
+
+
+
 ## Observations
 
 Wha happens when we access the system directly via IP?

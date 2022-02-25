@@ -23,8 +23,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: ghcr.io/gasilva-clgx/web:latest
-
+          image: ghcr.io/gasilva-clgx/web:{tag}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -33,6 +32,11 @@ spec:
               value: "80"
             - name: API_HOST
               value: "http://api:8081"
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 20
+            periodSeconds: 5
       imagePullSecrets:
         - name: regcred
 
@@ -51,5 +55,5 @@ spec:
       targetPort: 80
       
   type: LoadBalancer
-  loadBalancerIP: 35.239.18.18
+  loadBalancerIP: 35.184.246.73
 

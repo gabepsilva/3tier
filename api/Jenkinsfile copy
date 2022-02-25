@@ -10,7 +10,7 @@ pipeline {
     stage('npm audit') {
       steps {
 
-        dir('web') {
+        dir('api') {
           sh 'npm audit | tee auditReport.html'
 
           publishHTML (
@@ -30,7 +30,7 @@ pipeline {
 
     stage('sonarqube') {
       steps {
-          sh 'env | sort'
+          echo "todo"
       }
     }
 
@@ -67,7 +67,6 @@ pipeline {
     }
     
     stage('deploy') {
-
       when {
         expression {BRANCH_NAME ==~ /(master|develop)/}
       }
@@ -75,7 +74,7 @@ pipeline {
       steps {
 
         sh """
-          cp 'web/k8s/develop/deployment.yaml' .
+          cp 'api/k8s/develop/deployment.yaml' .
           sed -i 's/{tag}/${env.SHORT_HASH}/g' deployment.yaml
           kubectl apply -f deployment.yaml
         """
