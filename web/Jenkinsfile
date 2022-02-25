@@ -71,11 +71,7 @@ pipeline {
           expression {BRANCH_NAME ==~ /(master|develop)/}
         }
 
-        steps {
-            
-            withCredentials([usernamePassword(credentialsId: 'gh-ga-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-              echo 'deploy'
-        }
+          kubectl apply -f 'web/k8s/develop/deployment.yaml'
       }
     }
   }

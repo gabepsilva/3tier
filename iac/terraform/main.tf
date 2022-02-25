@@ -69,7 +69,7 @@ resource "random_pet" "dbname" {
 module "database" {
   source = "./modules/database"
 
-  instance_name = "top3tier-${random_pet.dbname.id}"
+  instance_name = "top3tie2-${random_pet.dbname.id}"
   db_username = "postgres"
   machine_type = "db-f1-micro"
   region = "us-central1"
