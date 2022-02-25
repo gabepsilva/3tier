@@ -71,7 +71,10 @@ pipeline {
           expression {BRANCH_NAME ==~ /(master|develop)/}
         }
 
+        steps {
+
           kubectl apply -f 'web/k8s/develop/deployment.yaml'
+        }
       }
     }
   }
