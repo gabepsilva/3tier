@@ -33,8 +33,9 @@ spec:
               value: "80"
             - name: API_HOST
               value: "http://api:8081"
-        initialDelaySeconds: 5
-        periodSeconds: 5
+        livenessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
       imagePullSecrets:
         - name: regcred
 
