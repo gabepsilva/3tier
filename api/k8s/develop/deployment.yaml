@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: ghcr.io/gasilva-clgx/api
+          image: ghcr.io/gasilva-clgx/api:{tag}
 
           imagePullPolicy: Always
           ports:
@@ -44,6 +44,11 @@ spec:
               value: haproxy.3tier.tk
             - name: DBPORT
               value: "5432"
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
       imagePullSecrets:
         - name: regcred
 

@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: ghcr.io/gasilva-clgx/web:{tag}
+          image: ghcr.io/gasilva-clgx/{tag}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -32,11 +32,11 @@ spec:
               value: "80"
             - name: API_HOST
               value: "http://api:8081"
-        readinessProbe:
-          tcpSocket:
-            port: 80
-          initialDelaySeconds: 10
-          periodSeconds: 5
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
       imagePullSecrets:
         - name: regcred
 
